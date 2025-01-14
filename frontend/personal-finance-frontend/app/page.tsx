@@ -20,7 +20,7 @@ export default function Home() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-6 mt-8">
                     <Link
-                        href=""
+                        href="/user/register"
                         className={buttonVariants()}>
                         Get Started Now
                     </Link>
