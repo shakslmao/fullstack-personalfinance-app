@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
 
-
 const figtree = Figtree({ subsets: ["latin"], adjustFontFallback: false });
 
 export const metadata: Metadata = {
