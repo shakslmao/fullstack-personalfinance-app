@@ -35,7 +35,12 @@ export const LoginForm = () => {
         },
     });
 
-    const onSubmit = () => {};
+    const onSubmit = (data: TLoginValidationSchema) => {
+        setValidationError("");
+        setValidationSucceess("");
+
+        startTransition(() => {});
+    };
 
     return (
         <>

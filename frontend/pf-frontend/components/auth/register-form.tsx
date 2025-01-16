@@ -105,6 +105,7 @@ export const RegisterForm = ({
         });
     };
 
+    // social logings, google, git etc.
     const onClick = () => {};
 
     return (
@@ -260,6 +261,10 @@ export const RegisterForm = ({
                                                             month={date}
                                                             onMonthChange={(newMonth: any) =>
                                                                 setDate(newMonth)
+                                                            }
+                                                            disabled={(date: any) =>
+                                                                date > new Date() ||
+                                                                date < new Date("1900-01-01")
                                                             }
                                                             initialFocus
                                                         />
