@@ -18,20 +18,18 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <KeycloakProvider>
-            <html
-                lang="en"
-                suppressHydrationWarning>
-                <body className={cn("relative h-full font-sans antialiased", inter.className)}>
-                    <ThemeProvider
-                        attribute="class"
-                        defaultTheme="dark"
-                        enableSystem
-                        disableTransitionOnChange>
-                        <main className="relative flex flex-col min-h-screen">{children}</main>
-                    </ThemeProvider>
-                </body>
-            </html>
-        </KeycloakProvider>
+        <html
+            lang="en"
+            suppressHydrationWarning>
+            <body className={cn("relative h-full font-sans antialiased", inter.className)}>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="dark"
+                    enableSystem
+                    disableTransitionOnChange>
+                    <main className="relative flex flex-col min-h-screen">{children}</main>
+                </ThemeProvider>
+            </body>
+        </html>
     );
 }
