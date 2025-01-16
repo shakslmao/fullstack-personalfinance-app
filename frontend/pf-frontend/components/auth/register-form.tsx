@@ -10,7 +10,8 @@ import {
     FormDescription,
 } from "@/components/ui/form";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { FaGoogle } from "react-icons/fa";
+import { format, getMonth, getYear, setMonth, setYear } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -27,30 +28,84 @@ import { FormMessagingSuccess } from "../formSuccess";
 import { Input } from "../ui/input";
 import { FormLoadingState } from "../formLoading";
 import { Button, buttonVariants } from "../ui/button";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
-export const RegisterForm = () => {
+interface DatePickerProps {
+    startYear?: number;
+    endYear?: number;
+}
+
+export const RegisterForm = ({
+    startYear = getYear(new Date()) - 100,
+    endYear = getYear(new Date()) + 100,
+}: DatePickerProps) => {
     const router = useRouter();
     const [isSubmitting, startTransition] = useTransition();
     const [validationError, setValidationError] = useState<string | undefined>("");
     const [validationSuccess, setValidationSuccess] = useState<string | undefined>("");
-    const [date, setDate] = useState<Date>();
+    const [date, setDate] = useState<Date>(new Date());
     const form = useForm<TRegistrationValidationSchmea>({
         resolver: zodResolver(RegistrationValidationSchema),
         defaultValues: {
             firstname: "",
             email: "",
             password: "",
-            dateOfBirth: "",
+            dateOfBirth: undefined,
         },
     });
 
+    const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+
+    const years = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+
+    const handleMonthChange = (month: string) => {
+        const newDate = setMonth(date, months.indexOf(month));
+        setDate(newDate);
+        form.setValue("dateOfBirth", newDate.toISOString());
+    };
+
+    const handleYearChange = (year: string) => {
+        const newDate = setYear(date, parseInt(year));
+        setDate(newDate);
+        form.setValue("dateOfBirth", newDate.toISOString());
+    };
+
+    const handleSelect = (selectedDate: Date | undefined) => {
+        if (selectedDate) {
+            setDate(selectedDate);
+            form.setValue("dateOfBirth", selectedDate.toISOString());
+        }
+    };
+
     const onSubmit = (data: TRegistrationValidationSchmea) => {
+        console.log("Submitted Data: ", data);
         setValidationError("");
         setValidationSuccess("");
         startTransition(() => {
             // hook to user registration api.
         });
     };
+
+    const onClick = () => {};
 
     return (
         <>
@@ -132,7 +187,7 @@ export const RegisterForm = () => {
                                         )}
                                     />
                                 </div>
-                                <div>
+                                <div className="items-center">
                                     <FormField
                                         control={form.control}
                                         name="dateOfBirth"
@@ -145,9 +200,9 @@ export const RegisterForm = () => {
                                                     <PopoverTrigger asChild>
                                                         <FormControl>
                                                             <Button
-                                                                variant={"ghost"}
+                                                                variant={"secondary"}
                                                                 className={cn(
-                                                                    "w-[240px] pl-3 text-left font-normal",
+                                                                    "w-[350px] pl-3 text-left font-normal",
                                                                     !field.value &&
                                                                         "text-muted-foreground"
                                                                 )}>
@@ -163,19 +218,54 @@ export const RegisterForm = () => {
                                                     <PopoverContent
                                                         className="w-auto p-0"
                                                         align="start">
+                                                        <div className="flex justify-between p-2">
+                                                            <Select
+                                                                onValueChange={handleMonthChange}
+                                                                value={months[getMonth(date)]}>
+                                                                <SelectTrigger className="w-[110px]">
+                                                                    <SelectValue placeholder="Month" />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    {months.map((month) => (
+                                                                        <SelectItem
+                                                                            key={month}
+                                                                            value={month}>
+                                                                            {month}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                            <Select
+                                                                onValueChange={handleYearChange}
+                                                                value={getYear(date).toString()}>
+                                                                <SelectTrigger className="w-[110px]">
+                                                                    <SelectValue placeholder="Year" />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    {years.map((year) => (
+                                                                        <SelectItem
+                                                                            key={year}
+                                                                            value={year.toString()}>
+                                                                            {year}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
                                                         <Calendar
+                                                            // @ts-ignore
                                                             mode="single"
-                                                            selected={field.value}
-                                                            onSelect={field.onChange}
-                                                            disabled={(date) =>
-                                                                date > new Date() ||
-                                                                date < new Date("1900-01-01")
+                                                            selected={date}
+                                                            onSelect={handleSelect}
+                                                            month={date}
+                                                            onMonthChange={(newMonth: any) =>
+                                                                setDate(newMonth)
                                                             }
                                                             initialFocus
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
-                                                <FormDescription>
+                                                <FormDescription className="text-center">
                                                     Your date of birth is used to calculate your
                                                     age.
                                                 </FormDescription>
@@ -201,7 +291,6 @@ export const RegisterForm = () => {
                         </Form>
                     </div>
 
-                    <Separator />
                     <Link
                         href="/auth/login"
                         className={buttonVariants({
