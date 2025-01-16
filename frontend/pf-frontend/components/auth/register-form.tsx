@@ -7,7 +7,13 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
+    FormDescription,
 } from "@/components/ui/form";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight } from "lucide-react";
@@ -51,16 +57,16 @@ export const RegisterForm = () => {
             <div className="flex items-center justify-center min-h-screen mt-10">
                 <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
                     <div className="flex flex-col items-center space-y-2 text-center">
-                        <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-                            Lets Register You an Account
+                        <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl mb-6">
+                            Create Your Account
                         </h1>
                     </div>
                     <div className="grid gap-6">
                         <Form {...form}>
                             <form
-                                className="space-y-2"
+                                className="space-y-6"
                                 onSubmit={form.handleSubmit(onSubmit)}>
-                                <div className="space-y-2">
+                                <div>
                                     <FormField
                                         control={form.control}
                                         name="firstname"
@@ -74,7 +80,7 @@ export const RegisterForm = () => {
                                                         {...field}
                                                         disabled={isSubmitting}
                                                         placeholder="Enter your First Name"
-                                                        type="firstname"
+                                                        type="text"
                                                     />
                                                 </FormControl>
                                                 <FormMessage className="text-center" />
@@ -82,7 +88,7 @@ export const RegisterForm = () => {
                                         )}
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div>
                                     <FormField
                                         control={form.control}
                                         name="email"
@@ -104,10 +110,10 @@ export const RegisterForm = () => {
                                         )}
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div>
                                     <FormField
                                         control={form.control}
-                                        name="email"
+                                        name="password"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="block text-medium text-white">
@@ -118,10 +124,62 @@ export const RegisterForm = () => {
                                                         {...field}
                                                         disabled={isSubmitting}
                                                         placeholder="Enter your Password"
-                                                        type="email"
+                                                        type="password"
                                                     />
                                                 </FormControl>
                                                 <FormMessage className="text-center" />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div>
+                                    <FormField
+                                        control={form.control}
+                                        name="dateOfBirth"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel className="block text-medium text-white">
+                                                    Date of Birth
+                                                </FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button
+                                                                variant={"ghost"}
+                                                                className={cn(
+                                                                    "w-[240px] pl-3 text-left font-normal",
+                                                                    !field.value &&
+                                                                        "text-muted-foreground"
+                                                                )}>
+                                                                {field.value ? (
+                                                                    format(field.value, "PPP")
+                                                                ) : (
+                                                                    <span>Pick a date</span>
+                                                                )}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent
+                                                        className="w-auto p-0"
+                                                        align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={field.value}
+                                                            onSelect={field.onChange}
+                                                            disabled={(date) =>
+                                                                date > new Date() ||
+                                                                date < new Date("1900-01-01")
+                                                            }
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                                <FormDescription>
+                                                    Your date of birth is used to calculate your
+                                                    age.
+                                                </FormDescription>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
@@ -141,8 +199,8 @@ export const RegisterForm = () => {
                                 </Button>
                             </form>
                         </Form>
-                        {/* Add Socials Here */}
                     </div>
+
                     <Separator />
                     <Link
                         href="/auth/login"
