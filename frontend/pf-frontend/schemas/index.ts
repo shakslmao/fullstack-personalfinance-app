@@ -1,3 +1,4 @@
+import { M_PLUS_1 } from "next/font/google";
 import * as z from "zod";
 
 export const RegistrationValidationSchema = z.object({
@@ -21,4 +22,15 @@ export const RegistrationValidationSchema = z.object({
     ),
 });
 
+export const LoginValidationSchema = z.object({
+    username: z.string().min(1, { message: "Your Unique Username is Required" }),
+    password: z.string().min(1, { message: "Your Password is Required" }),
+});
+
+export const ResetPasswordValidationSchema = z.object({
+    email: z.string().email({ message: "Email is Required" }),
+});
+
 export type TRegistrationValidationSchmea = z.infer<typeof RegistrationValidationSchema>;
+export type TLoginValidationSchema = z.infer<typeof LoginValidationSchema>;
+export type TResetPasswordValidationSchema = z.infer<typeof ResetPasswordValidationSchema>;
