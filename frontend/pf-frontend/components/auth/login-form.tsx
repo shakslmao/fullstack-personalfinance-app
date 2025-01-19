@@ -30,7 +30,7 @@ export const LoginForm = () => {
     const form = useForm<TLoginValidationSchema>({
         resolver: zodResolver(LoginValidationSchema),
         defaultValues: {
-            username: "",
+            email: "",
             password: "",
         },
     });
@@ -63,17 +63,17 @@ export const LoginForm = () => {
                                 <div className="space-y-2">
                                     <FormField
                                         control={form.control}
-                                        name="username"
+                                        name="email"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="block text-medium text-white">
-                                                    Username
+                                                    Email
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         {...field}
                                                         disabled={isSubmitting} // Disable input while submitting
-                                                        placeholder="Enter your Username Pin"
+                                                        placeholder="Enter your Email"
                                                         type="email"
                                                     />
                                                 </FormControl>
