@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight } from "lucide-react";
-import { RegistrationValidationSchema, TRegistrationValidationSchmea } from "@/schemas";
+
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -36,6 +36,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { register } from "../../pages/api/api";
+import { RegistrationValidationSchema, TRegistrationValidationSchmea } from "schemas";
 
 interface DatePickerProps {
     startYear?: number;
@@ -55,6 +56,7 @@ export const RegisterForm = ({
         resolver: zodResolver(RegistrationValidationSchema),
         defaultValues: {
             firstname: "",
+            lastname: "",
             email: "",
             password: "",
             dateOfBirth: undefined,
@@ -102,10 +104,7 @@ export const RegisterForm = ({
         setValidationError("");
         setValidationSuccess("");
         startTransition(() => {
-            register(data).then((data) => {
-                setValidationError();
-                setValidationSuccess();
-            });
+            register(data);
         });
     };
 
@@ -140,6 +139,28 @@ export const RegisterForm = ({
                                                         {...field}
                                                         disabled={isSubmitting}
                                                         placeholder="Enter your First Name"
+                                                        type="text"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage className="text-center" />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div>
+                                    <FormField
+                                        control={form.control}
+                                        name="lastname"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="block text-medium text-white">
+                                                    Last Name
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        {...field}
+                                                        disabled={isSubmitting}
+                                                        placeholder="Enter your Last Name"
                                                         type="text"
                                                     />
                                                 </FormControl>

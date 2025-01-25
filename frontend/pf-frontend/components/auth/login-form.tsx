@@ -1,6 +1,5 @@
 "use client";
 
-import { LoginValidationSchema, TLoginValidationSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -21,6 +20,7 @@ import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
 import { ArrowRight } from "lucide-react";
+import { LoginValidationSchema, TLoginValidationSchema } from "schemas";
 
 export const LoginForm = () => {
     const [isSubmitting, startTransition] = useTransition();

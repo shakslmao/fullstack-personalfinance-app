@@ -4,3 +4,7 @@ export interface RegistrationResponse {
     username?: string;
     status?: string;
 }
+
+export interface AuthenticationResponse {
+    token: string;
+}

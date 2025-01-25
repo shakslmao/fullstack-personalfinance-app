@@ -3,6 +3,7 @@ import * as z from "zod";
 
 export const RegistrationValidationSchema = z.object({
     firstname: z.string().min(1, { message: "First name is Required " }),
+    lastname: z.string().min(1, { message: "Last name is Required " }),
     email: z.string().email({ message: "Email is Invalid " }),
     password: z
         .string()

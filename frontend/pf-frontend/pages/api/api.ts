@@ -1,12 +1,12 @@
-"user server";
+"use server";
 
-import {
-    TRegistrationValidationSchmea,
-    TLoginValidationSchema,
-    TResetPasswordValidationSchema,
-} from "@/schemas";
 import axios from "axios";
-import { RegistrationResponse } from "../../types/types";
+import { AuthenticationResponse, RegistrationResponse } from "../../types/types";
+import {
+    TLoginValidationSchema,
+    TRegistrationValidationSchmea,
+    TResetPasswordValidationSchema,
+} from "../../schemas";
 
 const NEXT_PUBLIC_API_AUTH_URL = "http://localhost:8090";
 const NEXT_PUBLIC_API_GATEWAY_URL = "http://localhost:8222";
@@ -36,9 +36,16 @@ export const register = async (
     }
 };
 
-export const login = async (loginDetails: TLoginValidationSchema) => {
-    const { data } = await api.post("/api/v1/auth/login", loginDetails);
-    return data;
+export const login = async (
+    loginDetails: TLoginValidationSchema
+): Promise<AuthenticationResponse> => {
+    try {
+        const { data } = await api.post<AuthenticationResponse>("/api/v1/auth/login", loginDetails);
+        return data;
+    } catch (error) {
+        console.error("Failed to Login");
+        throw error;
+    }
 };
 
 export const resetPassword = async (resetCredentials: TResetPasswordValidationSchema) => {

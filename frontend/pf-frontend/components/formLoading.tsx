@@ -1,5 +1,3 @@
-import { BeatLoader } from "react-spinners";
-
 interface FormLoadingProps {
     loadingMessage?: string;
 }
