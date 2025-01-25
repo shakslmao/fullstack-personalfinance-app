@@ -6,23 +6,34 @@ import {
     TResetPasswordValidationSchema,
 } from "@/schemas";
 import axios from "axios";
+import { RegistrationResponse } from "../../types/types";
 
-const API_AUTH_URL = "http://localhost:8090";
-const API_GATEWAY_URL = "http://localhost:8222";
+const NEXT_PUBLIC_API_AUTH_URL = "http://localhost:8090";
+const NEXT_PUBLIC_API_GATEWAY_URL = "http://localhost:8222";
 
 const api = axios.create({
-    baseURL: API_AUTH_URL,
+    baseURL: NEXT_PUBLIC_API_AUTH_URL,
     headers: { "Content-Type": "application/json" },
 });
 
 const gatewayApi = axios.create({
-    baseURL: API_GATEWAY_URL,
+    baseURL: NEXT_PUBLIC_API_AUTH_URL,
     headers: { "Content-Type": "application/json" },
 });
 
-export const register = async (userRegistrationDetails: TRegistrationValidationSchmea) => {
-    const { data } = await api.post("/api/v1/auth/register", userRegistrationDetails);
-    return data;
+export const register = async (
+    userRegistrationDetails: TRegistrationValidationSchmea
+): Promise<RegistrationResponse> => {
+    try {
+        const { data } = await api.post<RegistrationResponse>(
+            "/api/v1/auth/register",
+            userRegistrationDetails
+        );
+        return data;
+    } catch (error) {
+        console.error("Registration Failed", error);
+        throw error;
+    }
 };
 
 export const login = async (loginDetails: TLoginValidationSchema) => {

@@ -35,6 +35,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { register } from "../../pages/api/api";
 
 interface DatePickerProps {
     startYear?: number;
@@ -101,7 +102,10 @@ export const RegisterForm = ({
         setValidationError("");
         setValidationSuccess("");
         startTransition(() => {
-            // hook to user registration api.
+            register(data).then((data) => {
+                setValidationError();
+                setValidationSuccess();
+            });
         });
     };
 
