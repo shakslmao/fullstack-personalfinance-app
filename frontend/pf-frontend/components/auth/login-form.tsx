@@ -21,6 +21,7 @@ import Link from "next/link";
 import { Separator } from "../ui/separator";
 import { ArrowRight } from "lucide-react";
 import { LoginValidationSchema, TLoginValidationSchema } from "schemas";
+import { login } from "pages/api/api";
 
 export const LoginForm = () => {
     const [isSubmitting, startTransition] = useTransition();
@@ -39,7 +40,9 @@ export const LoginForm = () => {
         setValidationError("");
         setValidationSucceess("");
 
-        startTransition(() => {});
+        startTransition(() => {
+            login(data);
+        });
     };
 
     return (
