@@ -8,15 +8,15 @@ import {
     FormLabel,
     FormMessage,
     FormDescription,
-} from "@/components/ui/form";
-import { Calendar } from "@/components/ui/calendar";
+} from "components/ui/form";
+import { Calendar } from "components/ui/calendar";
 import { FaGoogle } from "react-icons/fa";
 import { format, getMonth, getYear, setMonth, setYear } from "date-fns";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "lib/utils";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "components/ui/separator";
 import { ArrowRight } from "lucide-react";
 
 import { useRouter } from "next/navigation";
@@ -34,9 +34,10 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from "components/ui/select";
 import { register } from "../../pages/api/api";
 import { RegistrationValidationSchema, TRegistrationValidationSchmea } from "schemas";
+import { REGISTER_REDIRECT } from "routes";
 
 interface DatePickerProps {
     startYear?: number;
@@ -105,6 +106,7 @@ export const RegisterForm = ({
         setValidationSuccess("");
         startTransition(() => {
             register(data);
+            router.push(REGISTER_REDIRECT);
         });
     };
 

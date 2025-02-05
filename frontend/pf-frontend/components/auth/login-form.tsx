@@ -12,7 +12,7 @@ import {
     FormLabel,
     FormMessage,
     FormDescription,
-} from "@/components/ui/form";
+} from "components/ui/form";
 import { Input } from "../ui/input";
 import { FormMessagingError } from "../formError";
 import { FormMessagingSuccess } from "../formSuccess";
@@ -22,7 +22,6 @@ import { Separator } from "../ui/separator";
 import { ArrowRight } from "lucide-react";
 import { LoginValidationSchema, TLoginValidationSchema } from "schemas";
 import { login } from "pages/api/api";
-import { authenticateUser } from "data/user";
 
 export const LoginForm = () => {
     const [isSubmitting, startTransition] = useTransition();
@@ -42,7 +41,7 @@ export const LoginForm = () => {
         setValidationSucceess("");
 
         startTransition(() => {
-            authenticateUser(data.email, data.password);
+            login(data);
         });
     };
 
