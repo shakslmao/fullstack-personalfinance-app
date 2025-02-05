@@ -32,6 +32,21 @@ export const ResetPasswordValidationSchema = z.object({
     email: z.string().email({ message: "Email is Required" }),
 });
 
+export const ActivationTokenSchema = z.object({
+    token: z
+        .string()
+        .length(6)
+        .regex(/^\d{6}$/, "Token must be a 6-digit number"),
+    createdAt: z
+        .string()
+        .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid Created Date " }),
+    expiresAt: z.string().refine((val) => !isNaN(Date.parse(val)), {
+        message: "Invalid Expired Date",
+    }),
+    userId: z.string().optional(),
+});
+
 export type TRegistrationValidationSchmea = z.infer<typeof RegistrationValidationSchema>;
 export type TLoginValidationSchema = z.infer<typeof LoginValidationSchema>;
 export type TResetPasswordValidationSchema = z.infer<typeof ResetPasswordValidationSchema>;
+export type TActivationTokenSchema = z.infer<typeof ActivationTokenSchema>;
