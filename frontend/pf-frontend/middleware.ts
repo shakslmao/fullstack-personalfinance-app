@@ -1,49 +1,33 @@
-import NextAuth from "next-auth";
-import authConfig from "auth.config";
-import { LOGIN_REDIRECT, publicRoutes, authenticatedRoutes, apiAuthPrefix } from "routes";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyJwt } from "./utils/jwt";
+import { LOGIN_REDIRECT, publicRoutes } from "./routes";
 
-// Initialise NextAuth with the authentication configuration
-const { auth } = NextAuth(authConfig);
-
-// The default export is a middleware function that handles authentication
-export default auth((req) => {
-    // Extract the URL the user is trying to access
+export function middleware(req: NextRequest) {
     const { nextUrl } = req;
-    // Determine if the user is logged in by checking the presence of auth object
-    const userLoggedIn = !!req.auth;
 
-    // Check if the request is for an API route that requires authentication
-    const apiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-    // Check if the requested route is publicly accessible
-    const publicRoute = publicRoutes.includes(nextUrl.pathname);
-    // Check if the requested route requires authentication
-    const authRoute = authenticatedRoutes.includes(nextUrl.pathname);
+    const token =
+        req.cookies.get("jwt")?.value || req.headers.get("Authorization")?.replace("Bearer ", "");
 
-    // If the request is for an API authentication route, proceed without further checks
-    if (apiAuthRoute) {
-        return;
+    const decodedToken = token ? verifyJwt(token) : null;
+
+    if (publicRoutes.includes(nextUrl.pathname)) {
+        return NextResponse.next();
     }
 
-    // If the route requires authentication, redirect logged-out users to the login page
-    if (authRoute) {
-        if (userLoggedIn) {
-            // Redirect the user to the specified login redirect URL
-            return Response.redirect(new URL(LOGIN_REDIRECT, nextUrl));
-        }
-        return;
+    if (!decodedToken) {
+        return NextResponse.redirect(new URL("/auth/login", req.url));
     }
 
-    // If the user is not logged in and the route is not public, redirect to login
-    if (!userLoggedIn && !publicRoute) {
-        return Response.redirect(new URL("/auth/login", nextUrl));
+    if (["/auth/login", "auth/regiser"].includes(nextUrl.pathname)) {
+        return NextResponse.redirect(new URL(LOGIN_REDIRECT, req.url));
     }
 
-    // For all other cases, no specific action is required
-    return;
-});
+    return NextResponse.next();
+}
 
-// Configuration to optionally exclude certain paths from invoking this middleware
 export const config = {
-    // The matcher array specifies patterns for routes to match or exclude
-    matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+    matcher: [
+        "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+        "/(api|trpc)(.*)",
+    ],
 };
