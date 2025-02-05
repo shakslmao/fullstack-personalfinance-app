@@ -1,20 +1,17 @@
 /**
- *  Routes that do not require authentication
- * @type {string[]}
+ * Public routes that do not require authentication
  */
-export const publicRoutes = ["/auth/register", "/auth/new-verification", "/auth/new-password"];
-
-// Hide Routes that are used for authentication, they will be redirected to the home page if the user is already authenticated
-export const authenticatedRoutes = ["/auth/login", "/auth/error", "/auth/reset"];
+export const publicRoutes = [
+    "/",
+    "/auth/register",
+    "/auth/activate",
+    "/auth/new-password",
+    "/auth/login",
+];
 
 /**
- *  Routes that are for API authentication purposes,
- * @type {string[]}
- */
-export const apiAuthPrefix = "/api/auth";
-
-/**
- *  Default redirect for login
- * @type {string[]}
+ * Default redirect after login
  */
 export const LOGIN_REDIRECT = "/dashboard";
+
+export const REGISTER_REDIRECT = "/auth/activate";
