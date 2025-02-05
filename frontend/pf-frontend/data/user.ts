@@ -1,5 +1,9 @@
+"use server";
+
 import axios from "axios";
 import { AuthenticationRequest, User } from "types/auth";
+import { signIn } from "auth";
+import { LOGIN_REDIRECT } from "routes";
 
 export const authenticateUser = async (
     email: string,
@@ -19,6 +23,13 @@ export const authenticateUser = async (
         }
 
         const { userId } = await loginResponse.json();
+
+        await signIn("credentials", {
+            email,
+            password,
+            redirectTo: LOGIN_REDIRECT,
+        });
+
         return userId;
     } catch (error) {
         console.error("Error authenticating user:", error);
@@ -26,7 +37,12 @@ export const authenticateUser = async (
     }
 };
 
-export const fetchUserDetails = async (userId: string): Promise<User | null> => {
+export const fetchUserDetails = async (userId: string | undefined): Promise<User | null> => {
+    if (!userId) {
+        console.error("User ID is undefined.");
+        return null;
+    }
+
     try {
         const userDetailsResponse = await fetch(`http://localhost:8090/api/v1/users/${userId}`, {
             method: "GET",

@@ -43,19 +43,20 @@ export const login = async (
 ): Promise<AuthenticationResponse> => {
     try {
         const { data } = await api.post<AuthenticationResponse>("/api/v1/auth/login", loginDetails);
+        console.log("Login Response:", data);
 
         await signIn("credentials", {
-            loginDetails,
+            email: loginDetails.email,
+            password: loginDetails.password,
             redirectTo: LOGIN_REDIRECT,
         });
 
         return data;
     } catch (error) {
-        console.error("Failed to Login");
+        console.error("Failed to Login", error);
         throw error;
     }
 };
-
 export const resetPassword = async (resetCredentials: TResetPasswordValidationSchema) => {
     const { data } = await gatewayApi.post("/api/v1/users/reset", resetCredentials);
     return data;
