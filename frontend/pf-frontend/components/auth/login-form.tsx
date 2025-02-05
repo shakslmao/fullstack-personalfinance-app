@@ -22,8 +22,11 @@ import { Separator } from "../ui/separator";
 import { ArrowRight } from "lucide-react";
 import { LoginValidationSchema, TLoginValidationSchema } from "schemas";
 import { login } from "pages/api/api";
+import { useRouter } from "next/navigation";
+import { LOGIN_REDIRECT } from "routes";
 
 export const LoginForm = () => {
+    const router = useRouter();
     const [isSubmitting, startTransition] = useTransition();
     const [validationError, setValidationError] = useState<string | undefined>("");
     const [validationSuccess, setValidationSucceess] = useState<string | undefined>("");
@@ -40,8 +43,15 @@ export const LoginForm = () => {
         setValidationError("");
         setValidationSucceess("");
 
-        startTransition(() => {
-            login(data);
+        startTransition(async () => {
+            try {
+                const response = await login(data);
+                if (response) {
+                    router.push(LOGIN_REDIRECT);
+                }
+            } catch (error) {
+                setValidationError("Invalid credentials or login failed.");
+            }
         });
     };
 

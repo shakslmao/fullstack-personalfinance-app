@@ -104,9 +104,13 @@ export const RegisterForm = ({
         console.log("Submitted Data: ", data);
         setValidationError("");
         setValidationSuccess("");
-        startTransition(() => {
-            register(data);
-            router.push(REGISTER_REDIRECT);
+        startTransition(async () => {
+            try {
+                const response = await register(data);
+                if (response) router.push(REGISTER_REDIRECT);
+            } catch (error) {
+                setValidationError("Invalid Credentials");
+            }
         });
     };
 
