@@ -8,20 +8,43 @@ import {
     TRegistrationValidationSchmea,
     TResetPasswordValidationSchema,
 } from "../../schemas";
-import { LOGIN_REDIRECT, REGISTER_REDIRECT } from "routes";
+import { publicRoutes } from "routes";
 
 const NEXT_PUBLIC_API_AUTH_URL = process.env.NEXT_PUBLIC_API_AUTH_URL;
 const NEXT_PUBLIC_API_GATEWAY_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL;
 
+const getToken = () => {
+    if (typeof window === "undefined") return null;
+    return (
+        document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("jwt="))
+            ?.split("=")[1] || localStorage.getItem("token")
+    );
+};
+
 const api = axios.create({
     baseURL: NEXT_PUBLIC_API_AUTH_URL,
     headers: { "Content-Type": "application/json" },
+    withCredentials: true,
 });
 
 const gatewayApi = axios.create({
     baseURL: NEXT_PUBLIC_API_AUTH_URL,
     headers: { "Content-Type": "application/json" },
 });
+
+api.interceptors.request.use(
+    (config) => {
+        const token = getToken();
+        const isPublicRoute = publicRoutes.some((route) => config.url?.includes(route));
+        if (token && !isPublicRoute) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
 export const register = async (
     userRegistrationDetails: TRegistrationValidationSchmea
@@ -42,12 +65,12 @@ export const login = async (
     loginDetails: TLoginValidationSchema
 ): Promise<AuthenticationResponse> => {
     try {
-        const { data } = await api.post<AuthenticationResponse>("/api/v1/auth/login", loginDetails);
+        const { data } = await api.post<AuthenticationResponse>(
+            "/api/v1/auth/login",
+            loginDetails,
+            { withCredentials: true }
+        );
         console.log("Login Response:", data);
-
-        if (data.token) {
-            document.cookie = `jwt=${data.token}; Path=/; Secure; HttpOnly`;
-        }
 
         return data;
     } catch (error) {
@@ -71,3 +94,5 @@ export const resetPassword = async (resetCredentials: TResetPasswordValidationSc
     const { data } = await gatewayApi.post("/api/v1/users/reset", resetCredentials);
     return data;
 };
+
+export default api;
