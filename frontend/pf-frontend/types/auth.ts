@@ -21,7 +21,6 @@ export interface User {
     lastname: string;
     username: string;
     email: string;
-    password: string;
     roles: UserRoles;
     status: AccountStatus;
     dateOfBirth: string;

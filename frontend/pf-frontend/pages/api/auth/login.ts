@@ -17,9 +17,17 @@ export default async function handler(
         });
 
         const setCookieHeader = response.headers["set-cookie"];
-        if (setCookieHeader) res.setHeader("Set-Cookie", setCookieHeader);
+        if (setCookieHeader) {
+            res.setHeader("Set-Cookie", setCookieHeader);
+        } else {
+            console.warn("Set-Cookie Missing From Backend Response");
+        }
 
-        return res.status(200).json({ userId: response.data.userId, token: response.data.token });
+        console.log("Backend response", response.data);
+        const { userId, token } = response.data;
+        if (!token) throw new Error("Missing JWT");
+
+        return res.status(200).json({ userId, token });
     } catch (error: any) {
         return res.status(error.response?.status || 500).json({
             error: error.response?.data?.message || "Internal Server Error",

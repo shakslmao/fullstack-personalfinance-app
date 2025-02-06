@@ -1,6 +1,4 @@
-import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
-import { TActivationTokenSchema } from "schemas";
 import { api } from "../utils/api-client";
 
 export default async function handler(

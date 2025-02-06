@@ -1,0 +1,24 @@
+import { NextApiRequest, NextApiResponse } from "next";
+import { api } from "../utils/api-client";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== "GET") {
+        return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
+    }
+
+    try {
+        console.log("Incoming Cookies:", req.headers.cookie);
+        const response = await api.get("/api/v1/users/me", {
+            withCredentials: true,
+            headers: {
+                Cookie: req.headers.cookie || "",
+                Authorization: `Bearer ${req.headers.cookie?.split("=")[1]}`,
+            },
+        });
+        return res.status(200).json(response.data);
+    } catch (error: any) {
+        return res.status(error.response?.status || 500).json({
+            error: error.response?.data?.message || "Failed to fetch user details",
+        });
+    }
+}

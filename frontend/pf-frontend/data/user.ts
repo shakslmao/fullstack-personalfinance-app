@@ -1,24 +1,19 @@
-"use server";
-
-import api from "pages/api/api";
+import { gatewayApi } from "pages/api/utils/api-client";
 import { User } from "types/auth";
 
-export const fetchUserDetails = async (userId: string | undefined): Promise<User | null> => {
-    if (!userId) {
-        console.error("User ID is undefined.");
-        return null;
-    }
-
+export const fetchUserDetails = async (): Promise<User | null> => {
     try {
-        const { data } = await api.get<User>("/api/v1/users");
+        const response = await fetch("/api/users/me", {
+            method: "GET",
+            credentials: "include",
+        });
 
-        if (!data) {
-            throw new Error("Failed to fetch user details.");
-        }
+        if (!response) throw new Error("Failed ot Fetch User Details");
 
-        return data;
-    } catch (error) {
-        console.error("Error fetching user details:", error);
+        const user = await response.json();
+        return user;
+    } catch (error: any) {
+        console.error("Error fetching user:", error);
         return null;
     }
 };

@@ -1,4 +1,3 @@
-import { M_PLUS_1 } from "next/font/google";
 import * as z from "zod";
 
 export const RegistrationValidationSchema = z.object({
