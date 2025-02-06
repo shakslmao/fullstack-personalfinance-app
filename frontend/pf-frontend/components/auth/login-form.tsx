@@ -21,9 +21,9 @@ import Link from "next/link";
 import { Separator } from "../ui/separator";
 import { ArrowRight } from "lucide-react";
 import { LoginValidationSchema, TLoginValidationSchema } from "schemas";
-import { login } from "pages/api/api";
 import { useRouter } from "next/navigation";
 import { LOGIN_REDIRECT } from "routes";
+import { AuthenticationResponse } from "types/auth";
 
 export const LoginForm = () => {
     const router = useRouter();
@@ -45,10 +45,20 @@ export const LoginForm = () => {
 
         startTransition(async () => {
             try {
-                const response = await login(data);
-                if (response) {
-                    router.push(LOGIN_REDIRECT);
+                const response = await fetch("/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                    credentials: "include",
+                });
+
+                const result: AuthenticationResponse | { error: string } = await response.json();
+                if (!response.ok || "error" in result) {
+                    console.log(Error);
                 }
+                router.push(LOGIN_REDIRECT);
             } catch (error) {
                 setValidationError("Invalid credentials or login failed.");
             }
