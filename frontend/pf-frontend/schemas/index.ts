@@ -46,7 +46,7 @@ export const ActivationTokenSchema = z.object({
     userId: z.string().optional(),
 });
 
-export type TRegistrationValidationSchmea = z.infer<typeof RegistrationValidationSchema>;
+export type TRegistrationValidationSchema = z.infer<typeof RegistrationValidationSchema>;
 export type TLoginValidationSchema = z.infer<typeof LoginValidationSchema>;
 export type TResetPasswordValidationSchema = z.infer<typeof ResetPasswordValidationSchema>;
 export type TActivationTokenSchema = z.infer<typeof ActivationTokenSchema>;
