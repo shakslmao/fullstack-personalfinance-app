@@ -1,5 +1,6 @@
 "use client";
 
+import LogoutButton from "components/auth/logout-button";
 import { fetchUserDetails } from "data/user";
 import { useEffect, useState } from "react";
 import { User } from "types/user";
@@ -20,7 +21,14 @@ const DashboardPage = () => {
     if (loading) return <div>Loading...</div>;
     if (!user) return <div>You Must Be Logged In to Access This Page</div>;
 
-    return <div>Welcome, {user.firstname}</div>;
+    return (
+        <div>
+            <div>Welcome, {user.firstname}</div>
+            <div>
+                <LogoutButton />
+            </div>
+        </div>
+    );
 };
 
 export default DashboardPage;
