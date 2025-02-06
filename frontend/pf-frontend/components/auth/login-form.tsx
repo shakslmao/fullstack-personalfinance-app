@@ -57,6 +57,7 @@ export const LoginForm = () => {
                 const result: AuthenticationResponse | { error: string } = await response.json();
                 if (!response.ok || "error" in result) {
                     console.log(Error);
+                    throw new Error("Login Error");
                 }
                 router.push(LOGIN_REDIRECT);
             } catch (error) {

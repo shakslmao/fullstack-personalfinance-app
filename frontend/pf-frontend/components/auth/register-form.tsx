@@ -35,9 +35,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from "components/ui/select";
-import { register } from "../../pages/api/api";
-import { RegistrationValidationSchema, TRegistrationValidationSchmea } from "schemas";
+import { RegistrationValidationSchema, TRegistrationValidationSchema } from "schemas";
 import { REGISTER_REDIRECT } from "routes";
+import { RegistrationResponse } from "types/auth";
 
 interface DatePickerProps {
     startYear?: number;
@@ -53,7 +53,7 @@ export const RegisterForm = ({
     const [validationError, setValidationError] = useState<string | undefined>("");
     const [validationSuccess, setValidationSuccess] = useState<string | undefined>("");
     const [date, setDate] = useState<Date>(new Date());
-    const form = useForm<TRegistrationValidationSchmea>({
+    const form = useForm<TRegistrationValidationSchema>({
         resolver: zodResolver(RegistrationValidationSchema),
         defaultValues: {
             firstname: "",
@@ -100,14 +100,24 @@ export const RegisterForm = ({
         }
     };
 
-    const onSubmit = (data: TRegistrationValidationSchmea) => {
-        console.log("Submitted Data: ", data);
+    const onSubmit = (data: TRegistrationValidationSchema) => {
         setValidationError("");
         setValidationSuccess("");
         startTransition(async () => {
             try {
-                const response = await register(data);
-                if (response) router.push(REGISTER_REDIRECT);
+                const response = await fetch("/api/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                });
+                const result: RegistrationResponse | { error: string } = await response.json();
+                if (!response.ok || "error" in result) {
+                    console.log(Error);
+                    throw new Error("Registration Error");
+                }
+                router.push(REGISTER_REDIRECT);
             } catch (error) {
                 setValidationError("Invalid Credentials");
             }
