@@ -62,10 +62,15 @@ export const AccountActivationForm = () => {
 
         startTransition(async () => {
             try {
+                if (!data.email) {
+                    setValidationError("Email is required to request new activation code");
+                    return;
+                }
+
                 const response = await fetch("/api/auth/request-new-token", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data),
+                    body: JSON.stringify({ email: data.email }),
                 });
 
                 const result = await response.json();

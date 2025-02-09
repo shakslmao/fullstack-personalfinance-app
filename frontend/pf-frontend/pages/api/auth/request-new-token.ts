@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { api } from "../utils/api-client";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse<{ success: boolean; message: string } | { error: string }>
+) {
     if (req.method !== "POST") {
         return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
     }
