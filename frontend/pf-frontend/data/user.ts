@@ -8,7 +8,7 @@ export const fetchUserDetails = async (): Promise<User | null> => {
             credentials: "include",
         });
 
-        if (!response) throw new Error("Failed ot Fetch User Details");
+        if (!response) throw new Error("Failed to Fetch User Details");
 
         const user = await response.json();
         return user;
