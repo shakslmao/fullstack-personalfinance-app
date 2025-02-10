@@ -44,6 +44,8 @@ interface DatePickerProps {
     endYear?: number;
 }
 
+// Fix DOB Calender to hide anyone under 18.
+
 export const RegisterForm = ({
     startYear = getYear(new Date()) - 100,
     endYear = getYear(new Date()) + 100,
