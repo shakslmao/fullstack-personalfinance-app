@@ -49,7 +49,7 @@ export const AccountActivationForm = () => {
                 const result = await response.json();
                 if (!response.ok) throw new Error(result.error);
                 setValidationSucceess(result.message);
-                setTimeout(() => router.push("/api/auth/login"), 2000);
+                setTimeout(() => router.push("/auth/login"), 2000);
             } catch (error) {
                 setValidationError("Invalid Token");
             }
@@ -120,8 +120,6 @@ export const AccountActivationForm = () => {
                                 <InputOTPSlot index={5} />
                             </InputOTPGroup>
                         </InputOTP>
-                        <FormMessagingError errorMessage={validationError} />
-                        <FormMessagingSuccess successMessage={validationSuccess} />
                     </div>
 
                     <p className="text-sm text-center text-white mt-4">
