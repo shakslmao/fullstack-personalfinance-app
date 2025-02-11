@@ -8,6 +8,7 @@ export interface RegistrationResponse {
 export interface AuthenticationResponse {
     userId: number;
     token: string;
+    error?: string;
 }
 
 export interface AuthenticationRequest {
