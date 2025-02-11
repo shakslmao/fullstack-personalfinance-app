@@ -58,12 +58,21 @@ export const LoginForm = () => {
 
                 const result: AuthenticationResponse | { error: string } = await response.json();
                 if (!response.ok || "error" in result) {
-                    console.log(Error);
+                    if (response.status === 400) {
+                        setValidationError("Incorrect Email or Password");
+                    } else if (response.status === 401) {
+                        setValidationError("You need to authenticate your account.");
+                    } else if (response.status === 403) {
+                        setValidationError("Your account is not authorised to proceed.");
+                    } else {
+                        setValidationError("An unknown error occurred. Please try again.");
+                    }
                     throw new Error("Login Error");
                 }
+
                 router.push(LOGIN_REDIRECT);
             } catch (error) {
-                setValidationError("Invalid credentials or login failed.");
+                console.error("Login Error:", error);
             }
         });
     };
