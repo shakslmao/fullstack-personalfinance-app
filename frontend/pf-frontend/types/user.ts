@@ -3,6 +3,7 @@ export interface User {
     firstname: string;
     lastname: string;
     username: string;
+    userPin: string;
     email: string;
     password?: string;
     roles: UserRoles;

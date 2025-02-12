@@ -1,5 +1,4 @@
-import { gatewayApi } from "pages/api/utils/api-client";
-import { User } from "types/auth";
+import { User } from "types/user";
 
 export const fetchUserDetails = async (): Promise<User | null> => {
     try {
