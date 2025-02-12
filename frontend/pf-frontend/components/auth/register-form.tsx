@@ -80,7 +80,8 @@ export const RegisterForm = ({
         "November",
         "December",
     ];
-
+    const today = new Date();
+    const minAllowedDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
     const years = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
 
     const handleMonthChange = (month: string) => {
@@ -91,12 +92,13 @@ export const RegisterForm = ({
 
     const handleYearChange = (year: string) => {
         const newDate = setYear(date, parseInt(year));
+        if (newDate > minAllowedDate) return;
         setDate(newDate);
         form.setValue("dateOfBirth", newDate.toISOString());
     };
 
     const handleSelect = (selectedDate: Date | undefined) => {
-        if (selectedDate) {
+        if (selectedDate && selectedDate <= minAllowedDate) {
             setDate(selectedDate);
             form.setValue("dateOfBirth", selectedDate.toISOString());
         }
@@ -307,6 +309,7 @@ export const RegisterForm = ({
                                                             }
                                                             disabled={(date: any) =>
                                                                 date > new Date() ||
+                                                                date > minAllowedDate ||
                                                                 date < new Date("1900-01-01")
                                                             }
                                                             initialFocus
