@@ -23,7 +23,11 @@ export const Dashboard = () => {
 
     return (
         <div>
-            <div>Welcome, {user.firstname}</div>
+            <div>
+                <h1>Welcome, {user.firstname}</h1>
+                <p>your account number,{user.userPin}</p>
+            </div>
+
             <div>
                 <LogoutButton />
             </div>
